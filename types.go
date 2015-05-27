@@ -159,3 +159,72 @@ type TransactionResponse struct {
 	Errors      []string
 	Transaction Transaction
 }
+
+type CheckoutParamBuyer struct {
+	BuyerName     string `json:"buyer_name"`
+	BuyerAddress1 string `json:"buyer_address1"`
+	BuyerAddress2 string `json:"buyer_address2"`
+	BuyerCity     string `json:"buyer_city"`
+	BuyerState    string `json:"buyer_state"`
+	BuyerZip      string `json:"buyer_zip"`
+	BuyerEmail    string `json:"buyer_email"`
+	BuyerPhone    string `json:"buyer_phone"`
+	BuyerCountry  string `json:"buyer_country"`
+}
+
+type CheckoutParamItem struct {
+	Item struct {
+		Description string `json:"description"`
+		Code        string `json:"code"`
+		Price       string `json:"price"`
+		Currency    string `json:"currency"`
+		IsPhysical  string `json:"is_physical"`
+	} `json:"item"`
+}
+
+type CheckoutParam struct {
+	Checkout struct {
+		Amount        string              `json:"amount"`
+		Currency      string              `json:"currency"`
+		ReturnUrl     string              `json:"return_url"`
+		CancelUrl     string              `json:"cancel_url"`
+		CallbackUrl   string              `json:"callback_url"`
+		MerchantRefId string              `json:"merchant_ref_id"`
+		PosData       string              `json:"pos_data"`
+		Locale        string              `json:"locale"`
+		Buyer         CheckoutParamBuyer  `json:"buyer"`
+		Items         []CheckoutParamItem `json:"items"`
+	} `json:"checkout"`
+}
+
+type CheckoutItem struct {
+	Item struct {
+		Description string `json:"description"`
+		Code        string `json:"code"`
+		Price       string `json:"price"`
+		Currency    string `json:"currency"`
+		IsPhysical  bool   `json:"is_physical"`
+	} `json:"item"`
+}
+
+type Checkout struct {
+	Success  bool
+	Code     int
+	Errors   []string
+	Checkout struct {
+		Uid           string
+		CreatedAt     string `json:"created_at"`
+		Status        string
+		CheckoutUrl   string             `json:"checkout_url"`
+		Amount        string             `json:"amount"`
+		Currency      string             `json:"currency"`
+		ReturnUrl     string             `json:"return_url"`
+		CancelUrl     string             `json:"cancel_url"`
+		CallbackUrl   string             `json:"callback_url"`
+		MerchantRefId string             `json:"merchant_ref_id"`
+		PosData       string             `json:"pos_data"`
+		Locale        string             `json:"locale"`
+		Buyer         CheckoutParamBuyer `json:"buyer"`
+		Items         []CheckoutItem     `json:"items"`
+	} `json:"checkout"`
+}

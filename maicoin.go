@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	// "strings"
+	"strings"
 	"time"
 	//"encoding/json"
 	"strconv"
@@ -45,7 +45,7 @@ func ComputeHmac256(secret string, message string) string {
 	return hex.EncodeToString(h.Sum(nil))
 }
 
-func (c *Client) HttpVerb(verb Verb, path string, params map[string]interface{}) ([]byte, error) {
+func (c *Client) HttpVerb(verb Verb, path string, params map[string]interface{}, jsonForm string) ([]byte, error) {
 	// Build HTTP client
 	if c.httpClient == nil {
 		c.httpClient = &http.Client{}
@@ -60,8 +60,12 @@ func (c *Client) HttpVerb(verb Verb, path string, params map[string]interface{})
 		params = make(map[string]interface{})
 	}
 	if verb == HttpPost || verb == HttpPut {
-		postBody, _ := json.Marshal(params)
-		hmacMessage = hmacMessage + string(postBody)
+		if len(jsonForm) > 0 {
+			hmacMessage = hmacMessage + jsonForm
+		} else {
+			postBody, _ := json.Marshal(params)
+			hmacMessage = hmacMessage + string(postBody)
+		}
 	}
 	signature := ComputeHmac256(c.ApiSecret, hmacMessage)
 	// fmt.Println("nonce:", nonce)
@@ -77,11 +81,19 @@ func (c *Client) HttpVerb(verb Verb, path string, params map[string]interface{})
 	case HttpDelete:
 		req, err = http.NewRequest("DELETE", apiURL, nil)
 	case HttpPost:
-		postBody, _ := json.Marshal(params)
-		req, err = http.NewRequest("POST", apiURL, bytes.NewReader(postBody))
+		if len(jsonForm) > 0 {
+			req, err = http.NewRequest("POST", apiURL, strings.NewReader(jsonForm))
+		} else {
+			postBody, _ := json.Marshal(params)
+			req, err = http.NewRequest("POST", apiURL, bytes.NewReader(postBody))
+		}
 	case HttpPut:
-		postBody, _ := json.Marshal(params)
-		req, err = http.NewRequest("PUT", apiURL, bytes.NewReader(postBody))
+		if len(jsonForm) > 0 {
+			req, err = http.NewRequest("PUT", apiURL, strings.NewReader(jsonForm))
+		} else {
+			postBody, _ := json.Marshal(params)
+			req, err = http.NewRequest("PUT", apiURL, bytes.NewReader(postBody))
+		}
 	}
 	if err != nil {
 		return nil, err
