@@ -53,7 +53,7 @@ type Address struct {
 	CurrencyType string `json:"currency_type"`
 }
 
-type AddressType struct {
+type AddressObject struct {
 	Address struct {
 		Address   string
 		CreatedAt string `json:"created_at"`
@@ -64,7 +64,7 @@ type Addresses struct {
 	Success      bool
 	Code         int
 	Errors       []string
-	Addresses    []AddressType
+	Addresses    []AddressObject
 	CurrencyType string `json:"currency_type"`
 }
 
@@ -88,7 +88,7 @@ type Order struct {
 	MaicoinBankInformation MaicoinBankInformation `json:"maicoin_bank_information"`
 }
 
-type OrderType struct {
+type OrderResponse struct {
 	Success bool
 	Code    int
 	Errors  []string
@@ -107,4 +107,55 @@ type Orders struct {
 	CurrentPage int `json:"current_page"`
 	Count       int
 	NumOfPages  int `json:"num_of_pages"`
+}
+
+type Transaction struct {
+	Id              string
+	CreatedAt       string `json:"created_at"`
+	Amount          string
+	Currency        string
+	Status          string
+	TransactionType string `json:"transaction_type"`
+	Notes           string
+	Sender          struct {
+		Name  string
+		Email string
+	}
+	Recipient struct {
+		Name  string
+		Email string
+	}
+}
+
+type TransactionObject struct {
+	Transaction Transaction
+}
+
+type Transactions struct {
+	Success      bool
+	Code         int
+	Errors       []string
+	Transactions []TransactionObject
+	CurrentPage  int `json:"current_page"`
+	Count        int
+	NumOfPages   int `json:"num_of_pages"`
+	CurrentUser  struct {
+		Name  string
+		Email string
+	} `json:"current_user"`
+	Balance struct {
+		Amount   string
+		Currency string
+	}
+	NativeBalance struct {
+		Amount   string
+		Currency string
+	} `json:"native_balance"`
+}
+
+type TransactionResponse struct {
+	Success     bool
+	Code        int
+	Errors      []string
+	Transaction Transaction
 }

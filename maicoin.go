@@ -74,6 +74,8 @@ func (c *Client) HttpVerb(verb Verb, path string, params map[string]interface{})
 	switch verb {
 	case HttpGet:
 		req, err = http.NewRequest("GET", apiURL, nil)
+	case HttpDelete:
+		req, err = http.NewRequest("DELETE", apiURL, nil)
 	case HttpPost:
 		postBody, _ := json.Marshal(params)
 		req, err = http.NewRequest("POST", apiURL, bytes.NewReader(postBody))
