@@ -77,6 +77,9 @@ func (c *Client) HttpVerb(verb Verb, path string, params map[string]interface{})
 	case HttpPost:
 		postBody, _ := json.Marshal(params)
 		req, err = http.NewRequest("POST", apiURL, bytes.NewReader(postBody))
+	case HttpPut:
+		postBody, _ := json.Marshal(params)
+		req, err = http.NewRequest("PUT", apiURL, bytes.NewReader(postBody))
 	}
 	if err != nil {
 		return nil, err

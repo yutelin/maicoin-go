@@ -56,3 +56,14 @@ func (c *Client) CreateAccountPin(pin string) (Result, error) {
 	err = json.Unmarshal(body, &response)
 	return response, err
 }
+
+// Update account pin
+func (c *Client) UpdateAccountPin(oldPin string, newPin string) (Result, error) {
+	params := make(map[string]interface{})
+	params["old_pin"] = oldPin
+	params["new_pin"] = newPin
+	body, err := c.HttpVerb(HttpPut, "/user/account_pin", params)
+	var response Result
+	err = json.Unmarshal(body, &response)
+	return response, err
+}
