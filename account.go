@@ -2,7 +2,6 @@ package maicoin
 
 import (
 	"encoding/json"
-	// "fmt"
 )
 
 //Balance

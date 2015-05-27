@@ -67,3 +67,44 @@ type Addresses struct {
 	Addresses    []AddressType
 	CurrencyType string `json:"currency_type"`
 }
+
+type MaicoinBankInformation struct {
+	MaicoinBankCode          string `json:"maicoin_bank_code"`
+	MaicoinBankAccountName   string `json:"maicoin_bank_account_name"`
+	MaicoinBankAccountNumber string `json:"maicoin_bank_account_number"`
+}
+
+type Order struct {
+	Type                   string
+	Status                 string
+	Txid                   string
+	CreatedAt              string `json:"created_at"`
+	Notes                  string
+	CoinAmount             string `json:"coin_amount"`
+	CoinCurrency           string `json:"coin_currency"`
+	CoinPrice              string `json:"coin_price"`
+	TotalCost              string `json:"total_cost"`
+	Currency               string
+	MaicoinBankInformation MaicoinBankInformation `json:"maicoin_bank_information"`
+}
+
+type OrderType struct {
+	Success bool
+	Code    int
+	Errors  []string
+	Order   Order
+}
+
+type OrderObject struct {
+	Order Order
+}
+
+type Orders struct {
+	Success     bool
+	Code        int
+	Errors      []string
+	Orders      []OrderObject
+	CurrentPage int `json:"current_page"`
+	Count       int
+	NumOfPages  int `json:"num_of_pages"`
+}
