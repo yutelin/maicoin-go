@@ -228,3 +228,54 @@ type Checkout struct {
 		Items         []CheckoutItem     `json:"items"`
 	} `json:"checkout"`
 }
+
+type CheckoutObject struct {
+	Checkout struct {
+		Uid           string
+		CreatedAt     string `json:"created_at"`
+		Status        string
+		CheckoutUrl   string             `json:"checkout_url"`
+		Amount        string             `json:"amount"`
+		Currency      string             `json:"currency"`
+		ReturnUrl     string             `json:"return_url"`
+		CancelUrl     string             `json:"cancel_url"`
+		CallbackUrl   string             `json:"callback_url"`
+		MerchantRefId string             `json:"merchant_ref_id"`
+		PosData       string             `json:"pos_data"`
+		Locale        string             `json:"locale"`
+		Buyer         CheckoutParamBuyer `json:"buyer"`
+		Items         []CheckoutItem     `json:"items"`
+	} `json:"checkout"`
+}
+
+type Checkouts struct {
+	Success     bool
+	Code        int
+	Errors      []string
+	Checkouts   []CheckoutObject
+	CurrentPage int `json:"current_page"`
+	Count       int
+	NumOfPages  int `json:"num_of_pages"`
+}
+
+type CheckoutResponse struct {
+	Success  bool
+	Code     int
+	Errors   []string
+	Checkout struct {
+		Uid           string
+		CreatedAt     string `json:"created_at"`
+		Status        string
+		CheckoutUrl   string             `json:"checkout_url"`
+		Amount        string             `json:"amount"`
+		Currency      string             `json:"currency"`
+		ReturnUrl     string             `json:"return_url"`
+		CancelUrl     string             `json:"cancel_url"`
+		CallbackUrl   string             `json:"callback_url"`
+		MerchantRefId string             `json:"merchant_ref_id"`
+		PosData       string             `json:"pos_data"`
+		Locale        string             `json:"locale"`
+		Buyer         CheckoutParamBuyer `json:"buyer"`
+		Items         []CheckoutItem     `json:"items"`
+	} `json:"checkout"`
+}

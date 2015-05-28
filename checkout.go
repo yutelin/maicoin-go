@@ -2,6 +2,7 @@ package maicoin
 
 import (
 	"encoding/json"
+	"net/url"
 	"strconv"
 )
 
@@ -57,6 +58,23 @@ func (param *CheckoutParam) AddItem(desc string, code string, price string,
 func (c *Client) CreateCheckout(jsonForm string) (Checkout, error) {
 	body, err := c.HttpVerb(HttpPost, "/checkouts", nil, jsonForm)
 	var response Checkout
+	err = json.Unmarshal(body, &response)
+	return response, err
+}
+
+func (c *Client) Checkouts(page int, limit int) (Checkouts, error) {
+	params := url.Values{}
+	params.Set("page", strconv.Itoa(page))
+	params.Set("limit", strconv.Itoa(limit))
+	body, err := c.HttpVerb(HttpGet, "/checkouts?"+params.Encode(), nil, "")
+	var response Checkouts
+	err = json.Unmarshal(body, &response)
+	return response, err
+}
+
+func (c *Client) Checkout(uid string) (CheckoutResponse, error) {
+	body, err := c.HttpVerb(HttpGet, "/checkouts/"+uid, nil, "")
+	var response CheckoutResponse
 	err = json.Unmarshal(body, &response)
 	return response, err
 }
