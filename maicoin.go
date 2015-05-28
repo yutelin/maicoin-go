@@ -32,9 +32,10 @@ const (
 // Client
 
 type Client struct {
-	ApiKey     string
-	ApiSecret  string
-	httpClient *http.Client
+	ApiKey      string
+	ApiSecret   string
+	AccessToken string
+	httpClient  *http.Client
 }
 
 // ComputeHmac256
@@ -52,27 +53,6 @@ func (c *Client) HttpVerb(verb Verb, path string, params map[string]interface{},
 	}
 
 	apiURL := MAICOIN_API_ENDPOINT + path
-
-	//Headers
-	nonce := strconv.FormatInt(time.Now().UnixNano()/1000, 10)
-	hmacMessage := nonce + apiURL
-	if params == nil {
-		params = make(map[string]interface{})
-	}
-	if verb == HttpPost || verb == HttpPut {
-		if len(jsonForm) > 0 {
-			hmacMessage = hmacMessage + jsonForm
-		} else {
-			postBody, _ := json.Marshal(params)
-			hmacMessage = hmacMessage + string(postBody)
-		}
-	}
-	signature := ComputeHmac256(c.ApiSecret, hmacMessage)
-	// fmt.Println("nonce:", nonce)
-	// fmt.Println("hmacMessage", hmacMessage)
-	// fmt.Println("signature", signature)
-
-	apiURL = apiURL //+ "/?" + params.Encode()
 	var req *http.Request
 	var err error
 	switch verb {
@@ -98,10 +78,33 @@ func (c *Client) HttpVerb(verb Verb, path string, params map[string]interface{},
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("ACCESS_KEY", c.ApiKey)
-	req.Header.Set("ACCESS_SIGNATURE", signature)
-	req.Header.Set("ACCESS_NONCE", nonce)
-	req.Header.Set("Content-Type", "application/json")
+
+	if len(c.ApiKey) > 0 && len(c.ApiSecret) > 0 {
+		//Headers
+		nonce := strconv.FormatInt(time.Now().UnixNano()/1000, 10)
+		hmacMessage := nonce + apiURL
+		if params == nil {
+			params = make(map[string]interface{})
+		}
+		if verb == HttpPost || verb == HttpPut {
+			if len(jsonForm) > 0 {
+				hmacMessage = hmacMessage + jsonForm
+			} else {
+				postBody, _ := json.Marshal(params)
+				hmacMessage = hmacMessage + string(postBody)
+			}
+		}
+		signature := ComputeHmac256(c.ApiSecret, hmacMessage)
+		// fmt.Println("nonce:", nonce)
+		// fmt.Println("hmacMessage", hmacMessage)
+		// fmt.Println("signature", signature)
+		req.Header.Set("ACCESS_KEY", c.ApiKey)
+		req.Header.Set("ACCESS_SIGNATURE", signature)
+		req.Header.Set("ACCESS_NONCE", nonce)
+		req.Header.Set("Content-Type", "application/json")
+	} else {
+		req.Header.Set("AUTHORIZATION", "Bearer "+c.AccessToken)
+	}
 
 	// Make the request
 	return c.makeRequest(req)
