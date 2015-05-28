@@ -9,10 +9,9 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
-	//"encoding/json"
-	"strconv"
 )
 
 // Constants
@@ -30,7 +29,6 @@ const (
 )
 
 // Client
-
 type Client struct {
 	ApiKey      string
 	ApiSecret   string
@@ -95,9 +93,6 @@ func (c *Client) HttpVerb(verb Verb, path string, params map[string]interface{},
 			}
 		}
 		signature := ComputeHmac256(c.ApiSecret, hmacMessage)
-		// fmt.Println("nonce:", nonce)
-		// fmt.Println("hmacMessage", hmacMessage)
-		// fmt.Println("signature", signature)
 		req.Header.Set("ACCESS_KEY", c.ApiKey)
 		req.Header.Set("ACCESS_SIGNATURE", signature)
 		req.Header.Set("ACCESS_NONCE", nonce)
@@ -125,12 +120,9 @@ func (c *Client) makeRequest(req *http.Request) ([]byte, error) {
 		return nil, err
 	}
 
-	//fmt.Println(string(body))
-
 	// Check status code
 	if resp.StatusCode != 200 {
 		fmt.Println(string(body))
-		//return nil, fmt.Errorf("Invalid HTTP response code: %d", resp.StatusCode)
 	}
 
 	// Return
